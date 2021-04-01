@@ -1,7 +1,7 @@
 """
 *********************************************************
 *                                                       *
-* Project Name: Socket Squares                     *
+* Project Name: Socket Squares                          *
 * Author: github.com/kirigaine                          *
 * Description: A simple socket project with pygame,     *
 *   each player controls a randomly generated square    *
@@ -22,8 +22,8 @@ SERVERIP = socket.gethostbyname(socket.gethostname())
 PORT = 26256
 
 # Server data constraints
-HEADER = 16
-FORMAT = 'utf-8'
+HEADER_SIZE = 16
+FORMAT_TYPE = 'utf-8'
 
 # Create and bind server socket
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -35,7 +35,6 @@ player_squares = []
 #print(testsquare.name)
 #player_squares.append(testsquare)
 
-
 def clientHandling(client_conn, client_addr):
     # Boolean to manage connection status for server
     connected = True
@@ -44,32 +43,32 @@ def clientHandling(client_conn, client_addr):
     while connected:
 
         # Receive header that describes data length
-        data_length = client_conn.recv(HEADER).decode(FORMAT)
+        header_data = client_conn.recv(HEADER_SIZE).decode(FORMAT_TYPE)
 
         # If data has any content/exists, process the data
-        if data_length:
+        if header_data:
             # Convert the header to an integer to use to receive exact amount of data
-            data_length = int(data_length)
-            data = client_conn.recv(data_length).decode(FORMAT)
+            header_data = int(header_data)
+            data = client_conn.recv(header_data).decode(FORMAT_TYPE)
             # If data is specific message, disconnect client
-            if data == "!disconnect":
+            if data == "!quit":
                 connected = False
                 print(f"{client_addr} has disconnected")
             # Print data if not attempt to disconnect
             else:
                 print (f"[{client_addr}] says: {data}")
+            header_data = data = ""
             # Send confirmation message to client
-            client_conn.send("Data received".encode(FORMAT))
+            client_conn.send("Data received".encode(FORMAT_TYPE))
 
     # Disconnect client
-    client_conn.close()
-
-    
+    client_conn.close() 
 
 def serverLaunch():
     # Start socket listening
     print("[SERVER] Server is launching...")
-    server.listen()
+    # Limit total amount of clients connected
+    server.listen(8)
     print(f"[SERVER] Server is listening at {SERVERIP} on port {PORT}")
 
     while True:
