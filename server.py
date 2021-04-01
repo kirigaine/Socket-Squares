@@ -12,7 +12,7 @@
 """
 import socket
 import threading
-#import pickle
+import pickle
 #import square as sq
 
 # Append player to square when join
@@ -51,6 +51,8 @@ def clientHandling(client_conn, client_addr):
             header_data = int(header_data)
             data = client_conn.recv(header_data).decode(FORMAT_TYPE)
             # If data is specific message, disconnect client
+            #d = pickle.loads(data)
+            #data = d
             if data == "!quit":
                 connected = False
                 print(f"{client_addr} has disconnected")

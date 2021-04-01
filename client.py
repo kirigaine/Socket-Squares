@@ -3,8 +3,13 @@ client.py
 """
 import socket
 import re
+import pickle
+
 import pygame
-#import square
+from pygame.sprite import Group
+
+import game_functions as gf
+import square
 
 # Server network
 user_input = ""
@@ -16,7 +21,6 @@ while not x:
     x = re.search("^[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}$", user_input)
     if not x:
         print("Invalid IPv4. Please try again following the format: X.X.X.X")
-
 
 SERVERIP = user_input
 PORT = 26256
@@ -47,14 +51,27 @@ def sendData(data):
     print(client.recv(2048).decode(FORMAT_TYPE))
 
 # Initialize and manage pygame settings
-#pygame.init()
-#pygame.display.set_caption("Socket Squares Test")
+pygame.init()
+pygame.display.set_caption("Socket Squares Test")
 
 # Declare pygame screen
-#screen = pygame.display.set_mode((800,600))
+screen = pygame.display.set_mode((800,600))
+
+player_square = square.Square(screen)
+#player_squares = Group()
+#player_squares.add(square.Square(screen))
+
+while True:
+    gf.check_events(screen, player_square)
+    #my_square = pickle.dumps(player_square)
+    #sendData(my_square)
+    #receive data after send
+    gf.update_screen(screen, player_square)
+
+
 
 # Send two test inputs to server
-myinput = ""
+"""myinput = ""
 while myinput != "exit":
     myinput = input("Say: ")
-    sendData(myinput)
+    sendData(myinput)"""

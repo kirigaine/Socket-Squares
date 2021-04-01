@@ -3,8 +3,9 @@ square.py
 """
 from random import randint
 import pygame
+from pygame.sprite import Sprite
 
-class Square():
+class Square(Sprite):
 
     def __init__(self, screen=None):
         self.screen = screen
