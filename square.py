@@ -9,8 +9,9 @@ class Square(Sprite):
 
     def __init__(self, screen=None):
         self.screen = screen
+
         self.position = (randint(20,780),randint(20,580))
-        self.size = (randint(5,50),randint(5,50))
+        self.size = (randint(50,100),randint(50,100))
         self.rect = pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
         self.center = float(self.rect.centerx)
         self.color = (randint(0,255),randint(0,255),randint(0,255))

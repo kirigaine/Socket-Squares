@@ -1,41 +1,75 @@
 """
 client.py
 """
+# Standard library
 import socket
 import re
 import pickle
 
+# Third party
 import pygame
 from pygame.sprite import Group
 
+# Local source
 import game_functions as gf
 import square
 
-# Server network
-user_input = ""
-
-# Determine if given IPv4 is "valid" using regex
-x = None
-while not x:
-    user_input = input("\nEnter the IPv4 Address of a server to connect to: ")
-    x = re.search("^[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}$", user_input)
-    if not x:
-        print("Invalid IPv4. Please try again following the format: X.X.X.X")
-
-SERVERIP = user_input
+# Server port, IPv4 will be prompted
 PORT = 26256
 
 # Server data constraints
 HEADER_SIZE = 16
 FORMAT_TYPE = 'utf-8'
 
-# Create and connect client socket
-client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client.connect((SERVERIP,PORT))
-print(f"[SERVER] You have connected to the server @ {SERVERIP}")
-#print("Received from server: " + repr(data))
+def main():
+    server_ip = ipPrompt()
 
-def sendData(data):
+    # Create and connect client socket
+    client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    client.connect((server_ip,PORT))
+
+    # Report to client that connection has been established with server
+    print(f"[SERVER] You have connected to the server @ {server_ip}")
+
+    # Initialize and manage pygame settings
+    pygame.init()
+    pygame.display.set_caption("Socket Squares")
+
+    # Declare pygame screen
+    screen = pygame.display.set_mode((800,600))
+
+    player_square = square.Square(screen)
+
+    while True:
+
+       # gf.check_events(screen, player_square)
+        #my_square = pickle.dumps(player_square)
+        #sendData(my_square)
+        #receive data after send
+        #gf.update_screen(screen, player_square)
+
+
+
+        # Send two test inputs to server
+        myinput = ""
+        while myinput != "exit":
+            myinput = input("Say: ")
+            dataSwap(myinput, client)
+
+
+def ipPrompt():
+    # Prompt user for IPv4, determine if given IPv4 is "valid" using regex. Don't continue until pass regex
+    temp_ipv4 = ""
+    regex_passed = None
+    while not regex_passed:
+        temp_ipv4 = input("\nEnter the IPv4 Address of a server to connect to: ")
+        regex_passed = re.search("^[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}\.{1}[0-9]{1,3}$", temp_ipv4)
+        if not regex_passed:
+            print("Invalid IPv4. Please try again following the format: X.X.X.X")
+    return temp_ipv4
+
+def dataSwap(data, client):
+
     # Encode string in utf-8
     alldata = data.encode(FORMAT_TYPE)
 
@@ -50,28 +84,12 @@ def sendData(data):
     # Receive data from server
     print(client.recv(2048).decode(FORMAT_TYPE))
 
-# Initialize and manage pygame settings
-pygame.init()
-pygame.display.set_caption("Socket Squares Test")
+def drawScreen():
 
-# Declare pygame screen
-screen = pygame.display.set_mode((800,600))
+    
 
-player_square = square.Square(screen)
-#player_squares = Group()
-#player_squares.add(square.Square(screen))
+    player_square = square.Square(screen)
+    #player_squares = Group()
+    #player_squares.add(square.Square(screen))
 
-while True:
-    gf.check_events(screen, player_square)
-    #my_square = pickle.dumps(player_square)
-    #sendData(my_square)
-    #receive data after send
-    gf.update_screen(screen, player_square)
-
-
-
-# Send two test inputs to server
-"""myinput = ""
-while myinput != "exit":
-    myinput = input("Say: ")
-    sendData(myinput)"""
+main()

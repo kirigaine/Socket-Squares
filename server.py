@@ -13,9 +13,8 @@
 import socket
 import threading
 import pickle
-#import square as sq
 
-# Append player to square when join
+#import square as sq
 
 # Server network constants
 SERVERIP = socket.gethostbyname(socket.gethostname())
@@ -28,12 +27,6 @@ FORMAT_TYPE = 'utf-8'
 # Create and bind server socket
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server.bind((SERVERIP,PORT))
-
-# Create array of player squares
-player_squares = []
-#testsquare = sq.Square()
-#print(testsquare.name)
-#player_squares.append(testsquare)
 
 def clientHandling(client_conn, client_addr):
     # Boolean to manage connection status for server
@@ -79,12 +72,8 @@ def serverLaunch():
         # Create a thread and pass method to handle client
         thread = threading.Thread(target=clientHandling, args=((client_conn,client_addr)))
         thread.start()
-        #print(f"[SERVER] Current Users: {threading.activeCount() - 1}")
-        #with client_conn:
-            #while True:
-               # data = client_connection.recv(1024)
-                #if not data:
-                #    break
-                #client_connection.sendall(data)
+        # Display current amount of users when someone connects
+        print(f"[SERVER] Current Users: {threading.activeCount() - 1}")
+
 
 serverLaunch()
