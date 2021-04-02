@@ -15,29 +15,22 @@ def check_events(screen, square):
 def check_keyup_events(event, square):
     """Respond to key releases"""
     if event.key == pygame.K_RIGHT:
-        #ship.moving_right = False
         pass
     elif event.key == pygame.K_LEFT:
         pass
-        #ship.moving_left = False
 
 def check_keydown_events(event, square):
     """Respond to keypresses"""
     if event.key == pygame.K_RIGHT:
-        # Move the ship to the right
-        #ship.moving_right = True
         pass
     elif event.key == pygame.K_LEFT:
-        #ship.moving_left = True
         pass
     elif event.key == pygame.K_ESCAPE:
         #sys.exit()
         pass
 
 def update_screen(screen, squares):
-    """Update images on the scree and flip to the new screen"""
-    # Redraw the screen during each pass through the loop
-    # Redraw all bullets behind ship and aliens
+    """Update images on the screen and flip to the new screen"""
     squares.draw()
     # Make the most recently drawn screen visible
     pygame.display.flip()

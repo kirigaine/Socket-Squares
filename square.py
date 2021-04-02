@@ -5,7 +5,7 @@ from random import randint
 import pygame
 from pygame.sprite import Sprite
 
-class Square(Sprite):
+class Square():
 
     def __init__(self, screen=None):
         self.screen = screen
