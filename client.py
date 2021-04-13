@@ -8,7 +8,7 @@ import pickle
 
 # Third party
 import pygame
-from pygame.sprite import Group
+#from pygame.sprite import Group
 
 # Local source
 import game_functions as gf
@@ -28,6 +28,10 @@ def main():
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     client.connect((server_ip,PORT))
 
+    my_square = client.recv(2048)
+    my_square = pickle.loads(my_square)
+    #print(f"My square's ID is: {my_square.player_id}")
+
     # Report to client that connection has been established with server
     print(f"[SERVER] You have connected to the server @ {server_ip}")
 
@@ -37,8 +41,6 @@ def main():
 
     # Declare pygame screen
     screen = pygame.display.set_mode((800,600))
-
-    player_square = square.Square(screen)
 
     while True:
 
@@ -52,9 +54,14 @@ def main():
 
         # Send two test inputs to server
         myinput = ""
-        while myinput != "exit":
+        while myinput != "!quit" and myinput != "!q":
             myinput = input("Say: ")
             dataSwap(myinput, client)
+
+        client.close()
+        print("You have disconnected from the server. Now exiting...")
+        pygame.quit()
+        break
 
 
 def ipPrompt():
