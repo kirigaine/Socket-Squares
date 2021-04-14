@@ -41,27 +41,25 @@ def main():
 
     # Declare pygame screen
     screen = pygame.display.set_mode((800,600))
-
+    my_square.screen = screen
     while True:
 
-       # gf.check_events(screen, player_square)
-        #my_square = pickle.dumps(player_square)
-        #sendData(my_square)
-        #receive data after send
-        #gf.update_screen(screen, player_square)
+        gf.check_events(screen, my_square)
+        gf.update_screen(screen, my_square)
 
 
 
-        # Send two test inputs to server
+        # Infinitely request and send input until keyword entered, then disconnect
         myinput = ""
         while myinput != "!quit" and myinput != "!q":
             myinput = input("Say: ")
             dataSwap(myinput, client)
+        else:
+            client.close()
+            print("You have disconnected from the server. Now exiting...")
+            pygame.quit()
+            break
 
-        client.close()
-        print("You have disconnected from the server. Now exiting...")
-        pygame.quit()
-        break
 
 
 def ipPrompt():
@@ -93,10 +91,9 @@ def dataSwap(data, client):
 
 def drawScreen():
 
-    
-
-    player_square = square.Square(screen)
+    #player_square = square.Square(screen)
     #player_squares = Group()
     #player_squares.add(square.Square(screen))
+    pass
 
 main()
