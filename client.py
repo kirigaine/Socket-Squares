@@ -5,6 +5,7 @@ client.py
 import socket
 import re
 import pickle
+import sys
 
 # Third party
 import pygame
@@ -28,29 +29,38 @@ def main():
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     client.connect((server_ip,PORT))
 
-    my_square = client.recv(2048)
-    my_square = pickle.loads(my_square)
-    #print(f"My square's ID is: {my_square.player_id}")
-
     # Report to client that connection has been established with server
     print(f"[SERVER] You have connected to the server @ {server_ip}")
 
     # Initialize and manage pygame settings
+    print("Launching game window...")
     pygame.init()
     pygame.display.set_caption("Socket Squares")
 
-    # Declare pygame screen
+    # Declare pygame screen and resolution
     screen = pygame.display.set_mode((800,600))
-    my_square.screen = screen
+
+    # !!! Receive the exact amount of data rather than 2048
+    print("Receiving character data...")
+    my_square = client.recv(2048)
+    my_square = pickle.loads(my_square)
+    my_square = square.PlayerSquare(my_square, screen)
+    print("Character data received.")
+
+    # List of all current player squares
+    squares = []
+
     while True:
 
         gf.check_events(screen, my_square)
+        print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
+        #pickleSwap(my_square,client)
         gf.update_screen(screen, my_square)
 
 
 
         # Infinitely request and send input until keyword entered, then disconnect
-        myinput = ""
+        """myinput = ""
         while myinput != "!quit" and myinput != "!q":
             myinput = input("Say: ")
             dataSwap(myinput, client)
@@ -58,7 +68,12 @@ def main():
             client.close()
             print("You have disconnected from the server. Now exiting...")
             pygame.quit()
-            break
+            break"""
+    else:
+        client.close()
+        print("You have disconnected from the server. Now exiting...")
+        pygame.quit()
+        sys.exit()
 
 
 
@@ -87,13 +102,17 @@ def dataSwap(data, client):
     client.send(alldata)
 
     # Receive data from server
-    print(client.recv(2048).decode(FORMAT_TYPE))
+    return (client.recv(2048).decode(FORMAT_TYPE))
 
-def drawScreen():
+def pickleSwap(data, client):
+    alldata = pickle.dumps(square.MySquare(data.player_id, data.name))
+    send_length = f"{len(alldata):<{HEADER_SIZE}}"
+    send_length = str(send_length).encode(FORMAT_TYPE)
 
-    #player_square = square.Square(screen)
-    #player_squares = Group()
-    #player_squares.add(square.Square(screen))
-    pass
+    client.send(send_length)
+    client.send(alldata)
+
+    squares = client.recv(2048)
+    squares = pickle.loads(squares)
 
 main()

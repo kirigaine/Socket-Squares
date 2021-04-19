@@ -61,7 +61,9 @@ def clientHandling(client_conn, client_addr, new_square):
                 print (f"[{client_addr}] says: {data}")
             header_data = data = ""
             # Send confirmation message to client
-            client_conn.send("Data received".encode(FORMAT_TYPE))
+            #client_conn.send("Data received".encode(FORMAT_TYPE))
+            temp = pickle.dumps(squares)
+            client_conn.send(temp)
 
     # Disconnect client
     client_conn.close() 
