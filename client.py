@@ -30,10 +30,10 @@ def main():
     client.connect((server_ip,PORT))
 
     # Report to client that connection has been established with server
-    print(f"[SERVER] You have connected to the server @ {server_ip}")
+    print(f"[CLIENT] You have connected to the server @ {server_ip}")
 
     # Initialize and manage pygame settings
-    print("Launching game window...")
+    print("[CLIENT] Launching game window...")
     pygame.init()
     pygame.display.set_caption("Socket Squares")
 
@@ -41,14 +41,18 @@ def main():
     screen = pygame.display.set_mode((800,600))
 
     # !!! Receive the exact amount of data rather than 2048
-    print("Receiving character data...")
-    my_square = client.recv(2048)
+    print("[CLIENT] Receiving character data...")
+    header_data = client.recv(HEADER_SIZE).decode(FORMAT_TYPE)
+    if header_data:
+        header_data = int(header_data)
+        
+    my_square = client.recv(header_data)
     my_square = pickle.loads(my_square)
     my_square = square.PlayerSquare(my_square, screen)
-    print("Character data received.")
+    print("[CLIENT] Character data received.")
 
     # List of all current player squares
-    squares = []
+    player_squares = []
 
     while True:
 
@@ -56,19 +60,6 @@ def main():
         print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
         #pickleSwap(my_square,client)
         gf.update_screen(screen, my_square)
-
-
-
-        # Infinitely request and send input until keyword entered, then disconnect
-        """myinput = ""
-        while myinput != "!quit" and myinput != "!q":
-            myinput = input("Say: ")
-            dataSwap(myinput, client)
-        else:
-            client.close()
-            print("You have disconnected from the server. Now exiting...")
-            pygame.quit()
-            break"""
     else:
         client.close()
         print("You have disconnected from the server. Now exiting...")

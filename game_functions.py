@@ -6,6 +6,7 @@ def check_events(screen, square):
     """Respond to keypresses and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            print("justquit")
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, square)
@@ -23,6 +24,7 @@ def update_screen(screen, squares):
 def check_keydown_events(event, square):
     """Respond to keypresses"""
     if event.key == pygame.K_ESCAPE:
+        print("escape")
         sys.exit()  
     elif event.key == pygame.K_UP or event.key == pygame.K_w:
         square.y_velocity -= 1

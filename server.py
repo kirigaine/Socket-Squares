@@ -30,15 +30,23 @@ FORMAT_TYPE = 'utf-8'
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server.bind((SERVERIP,PORT))
 
-squares = []
+player_squares = []
 pos_updates = Queue()
+lock = threading.Lock()
 
 def clientHandling(client_conn, client_addr, new_square):
     # Boolean to manage connection status for server
     connected = True
 
-    squares.append(new_square)
+    print("[THREAD] Acquiring the lock...")
+    with lock:
+        print("[THREAD] Lock acquired. Appending square.")
+        player_squares.append(new_square)
+    print("[THREAD] Released the lock.")
+
     new_square = pickle.dumps(new_square)
+    theader_data = f"{len(new_square):<{HEADER_SIZE}}"
+    client_conn.send(theader_data.encode(FORMAT_TYPE))
     client_conn.send(new_square)
 
     print(f"[SERVER] Connection established @ {client_addr[0]}:{PORT}")
@@ -62,7 +70,7 @@ def clientHandling(client_conn, client_addr, new_square):
             header_data = data = ""
             # Send confirmation message to client
             #client_conn.send("Data received".encode(FORMAT_TYPE))
-            temp = pickle.dumps(squares)
+            temp = pickle.dumps(player_squares)
             client_conn.send(temp)
 
     # Disconnect client
@@ -91,7 +99,7 @@ def serverLaunch():
         thread = threading.Thread(target=clientHandling, args=((client_conn,client_addr,sq_factory.createSquare())))
         thread.start()
         # Display current amount of users when someone connects
-        print(f"[SERVER] Current Users: {threading.activeCount() - 1}")
+        print(f"[SERVER] Current Users: {threading.activeCount() - 2}")
 
 
 

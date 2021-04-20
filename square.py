@@ -18,7 +18,7 @@ class SquareFactory():
     def createSquare(self):
         temp_id = self.available_ids.pop()
         temp_name = self.available_names.pop()
-        print(f"Giving away player_id {temp_id} and player_name {temp_name}")
+        print(f"[SERVER] Giving away player_id {temp_id} and name {temp_name}")
         self.taken_ids.append(temp_id)
         self.taken_names.append(temp_name)
         return MySquare(temp_id, temp_name)
