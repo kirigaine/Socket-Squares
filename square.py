@@ -78,17 +78,17 @@ class PlayerSquare(MySquare):
     def update(self):
         """Update the player's square position based on movement flags"""
         # Restrict square from moving off screen
-        if self.h_velocity == 1:
+        if self.h_velocity == 3:
             if self.rect.right < self.screen_rect.right:
                 self.center_x += self.h_velocity
-        elif self.h_velocity == -1:
+        elif self.h_velocity == -3:
             if self.rect.left > self.screen_rect.left:
                 self.center_x += self.h_velocity
 
-        if self.y_velocity == 1:
+        if self.y_velocity == 3:
             if self.rect.bottom < self.screen_rect.bottom:
                 self.center_y += self.y_velocity
-        elif self.y_velocity == -1:
+        elif self.y_velocity == -3:
             if self.rect.top > self.screen_rect.top:
                 self.center_y += self.y_velocity
 

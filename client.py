@@ -36,11 +36,12 @@ def main():
     print("[CLIENT] Launching game window...")
     pygame.init()
     pygame.display.set_caption("Socket Squares")
+    clock = pygame.time.Clock()
 
     # Declare pygame screen and resolution
     screen = pygame.display.set_mode((800,600))
 
-    # !!! Receive the exact amount of data rather than 2048
+    # Done
     print("[CLIENT] Receiving character data...")
     header_data = client.recv(HEADER_SIZE).decode(FORMAT_TYPE)
     if header_data:
@@ -48,18 +49,22 @@ def main():
         
     my_square = client.recv(header_data)
     my_square = pickle.loads(my_square)
+    my_square_og = my_square
     my_square = square.PlayerSquare(my_square, screen)
     print("[CLIENT] Character data received.")
 
     # List of all current player squares
-    player_squares = []
+    player_squares = [None,None,None,None,None,None,None,None]
 
     while True:
 
         gf.check_events(screen, my_square)
-        print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
-        #pickleSwap(my_square,client)
-        gf.update_screen(screen, my_square)
+        #print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
+        #print(f"{player_squares}")
+        player_squares = pickleSwap(my_square, client, my_square_og)
+        gf.update_screen(screen, my_square, player_squares)
+        clock.tick(60)
+
     else:
         client.close()
         print("You have disconnected from the server. Now exiting...")
@@ -79,31 +84,21 @@ def ipPrompt():
             print("Invalid IPv4. Please try again following the format: X.X.X.X")
     return temp_ipv4
 
-def dataSwap(data, client):
-
-    # Encode string in utf-8
-    alldata = data.encode(FORMAT_TYPE)
-
-    # Add buffer and encode data length string in utf-8 
-    send_length = f"{len(alldata):<{HEADER_SIZE}}"
-    send_length = str(send_length).encode(FORMAT_TYPE)
-
-    # Send header to server, then data
-    client.send(send_length)
-    client.send(alldata)
-
-    # Receive data from server
-    return (client.recv(2048).decode(FORMAT_TYPE))
-
-def pickleSwap(data, client):
-    alldata = pickle.dumps(square.MySquare(data.player_id, data.name))
+def pickleSwap(data, client, og):
+    og.center_x = data.center_x
+    og.center_y = data.center_y
+    alldata = pickle.dumps(og)
     send_length = f"{len(alldata):<{HEADER_SIZE}}"
     send_length = str(send_length).encode(FORMAT_TYPE)
 
     client.send(send_length)
     client.send(alldata)
 
-    squares = client.recv(2048)
+    squares = client.recv(HEADER_SIZE)
+    squares = int(squares)
+    squares = client.recv(squares)
+
     squares = pickle.loads(squares)
+    return squares
 
 main()
