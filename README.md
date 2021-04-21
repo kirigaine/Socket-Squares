@@ -19,6 +19,10 @@ pip install -r requirements.txt
    - ```python client.py```
 3. Press 'ESC' key to exit the client at any time.
 
+# Controls
+
+Control your square using WASD or the arrow keys
+
 ## Known Issues
 
 1. The older commits have an issue opening and reading *names.txt* inside the SquareFactory class when running *server.py*. This is an error on my part due to my workspace hierarchy, and it will prevent the server from running unless you setup your file architecture like mine. However, the better fix is to simply alter the code (if for some reason you want to run the oldest working version). The fix:
