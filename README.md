@@ -19,7 +19,7 @@ pip install -r requirements.txt
    - ```python client.py```
 3. Press 'ESC' key to exit the client at any time.
 
-# Controls
+## Controls
 
 Control your square using WASD or the arrow keys
 
