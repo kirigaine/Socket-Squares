@@ -90,7 +90,7 @@ def pickleSwap(data, client, og):
     alldata = pickle.dumps(og)
     send_length = f"{len(alldata):<{HEADER_SIZE}}"
     send_length = str(send_length).encode(FORMAT_TYPE)
-
+    
     client.send(send_length)
     client.send(alldata)
 

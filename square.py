@@ -3,7 +3,6 @@ square.py
 """
 from random import randint, shuffle
 import pygame
-from pygame.sprite import Sprite
 
 class SquareFactory():
 
