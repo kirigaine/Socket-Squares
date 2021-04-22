@@ -24,7 +24,7 @@ class SquareFactory():
         return MySquare(temp_id, temp_name)
 
     def prepareNames(self):
-        with open("python\\testing\\socket_squares\\names.txt", "r") as f:
+        with open("names.txt", "r") as f:
             while True:
                 f_line = f.readline()
                 if not f_line:

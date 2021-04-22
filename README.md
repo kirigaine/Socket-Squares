@@ -25,7 +25,9 @@ Control your square using WASD or the arrow keys
 
 ## Known Issues
 
-1. The older commits have an issue opening and reading *names.txt* inside the SquareFactory class when running *server.py*. This is an error on my part due to my workspace hierarchy, and it will prevent the server from running unless you setup your file architecture like mine. However, the better fix is to simply alter the code (if for some reason you want to run the oldest working version). The fix:
+1. The socket has multiple ways to fail connecting over the internet. Make sure to port forward 26256 TCP for your router, check your firewall, and consider other standard errors when hosting/connecting online.
+
+2. The older commits have an issue opening and reading *names.txt* inside the SquareFactory class when running *server.py*. This is an error on my part due to my workspace hierarchy, and it will prevent the server from running unless you setup your file architecture like mine. However, the better fix is to simply alter the code (if for some reason you want to run the oldest working version). The fix:
 
     **Original *square.py*, line 27**
     ```python
@@ -36,7 +38,6 @@ Control your square using WASD or the arrow keys
     ```python
     with open("names.txt", "r") as f:
     ```
-2. The socket has multiple ways to fail connecting over the internet. Make sure to port forward 26256 TCP for your router, check your firewall, and consider other standard errors when connecting online.
 
 ## Contributing
 
