@@ -9,7 +9,6 @@ import sys
 
 # Third party
 import pygame
-#from pygame.sprite import Group
 
 # Local source
 import game_functions as gf
@@ -49,23 +48,24 @@ def main():
         
     my_square = client.recv(header_data)
     my_square = pickle.loads(my_square)
-    my_square_og = my_square
     my_square = square.PlayerSquare(my_square, screen)
     print("[CLIENT] Character data received.")
 
     # List of all current player squares
     player_squares = [None,None,None,None,None,None,None,None]
+    clock.tick(60)
 
     while True:
 
         gf.check_events(screen, my_square)
-        #print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
-        #print(f"{player_squares}")
-        player_squares = pickleSwap(my_square, client, my_square_og)
+
+        player_squares = pickleSwap(my_square, client)
+        
         gf.update_screen(screen, my_square, player_squares)
-        clock.tick(60)
+
 
     else:
+        # Exit cleanly
         client.close()
         print("You have disconnected from the server. Now exiting...")
         pygame.quit()
@@ -84,13 +84,18 @@ def ipPrompt():
             print("Invalid IPv4. Please try again following the format: X.X.X.X")
     return temp_ipv4
 
-def pickleSwap(data, client, og):
-    og.center_x = data.center_x
-    og.center_y = data.center_y
-    alldata = pickle.dumps(og)
+def printArray(given_array):
+    for item in given_array:
+        if item is not None:
+            pass
+
+def pickleSwap(data, client):
+
+    # Turn coordinates of player square into a tuple, send to server and receive all square updates
+    alldata = pickle.dumps((data.center_x, data.center_y))
     send_length = f"{len(alldata):<{HEADER_SIZE}}"
     send_length = str(send_length).encode(FORMAT_TYPE)
-    
+
     client.send(send_length)
     client.send(alldata)
 
@@ -99,6 +104,7 @@ def pickleSwap(data, client, og):
     squares = client.recv(squares)
 
     squares = pickle.loads(squares)
+    printArray(squares)
     return squares
 
 main()

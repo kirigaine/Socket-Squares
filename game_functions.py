@@ -16,12 +16,19 @@ def check_events(screen, square):
 def update_screen(screen, squares, player_squares):
     """Update images on the screen and flip to the new screen"""
 
+    # Move the player's local square
     squares.update()
+
+    # Reset screen to black
     screen.fill((0,0,0))
+
+    # Iterate through player_squares and draw all players
     for squa in player_squares:
         if squa is not None and squa.player_id != squares.player_id:
             squa.screen = screen
+            squa.update()
             squa.draw()
+
     squares.draw()
     # Make the most recently drawn screen visible
     pygame.display.flip()
