@@ -28,6 +28,23 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.9.1'
-      - name: Install pip and save module
-        run: pip freeze > requirements.txt
+      - name: Install modules      
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+      - name: Create executable using pyinstaller
+        run: |
+          pyinstaller client.py --onefile
+          pyinstaller server.py --onefile
+      - name: Create release(s)
+        uses: actions/create-release@v1
+        id: create_release
+        env: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+          body: "Executable for Socket-Squares"
+        
         
