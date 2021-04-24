@@ -28,6 +28,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.9.1'
-      - name: Save modules
-        run: python pip freeze > requirements.txt
+      - name: Install pip and save module
+        run: |
+          python -m pip install --upgrade pip
+          python pip freeze > requirements.txt
         
