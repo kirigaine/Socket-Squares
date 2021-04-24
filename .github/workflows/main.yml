@@ -45,7 +45,7 @@ jobs:
           prerelease: true
           body: "Executables for Socket-Squares"
       - name: Upload server.exe
-        uses: actions/upload-release@v1.0.2
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
@@ -54,7 +54,7 @@ jobs:
           asset_name: socketsquares_server.exe
           asset_content_type: application/exe
       - name: Upload client.exe
-        uses: actions/upload-release@v1.0.2
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
