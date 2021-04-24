@@ -9,7 +9,6 @@ import sys
 
 # Third party
 import pygame
-#from pygame.sprite import Group
 
 # Local source
 import game_functions as gf
@@ -30,46 +29,43 @@ def main():
     client.connect((server_ip,PORT))
 
     # Report to client that connection has been established with server
-    print(f"[SERVER] You have connected to the server @ {server_ip}")
+    print(f"[CLIENT] You have connected to the server @ {server_ip}")
 
     # Initialize and manage pygame settings
-    print("Launching game window...")
+    print("[CLIENT] Launching game window...")
     pygame.init()
     pygame.display.set_caption("Socket Squares")
+    clock = pygame.time.Clock()
 
     # Declare pygame screen and resolution
     screen = pygame.display.set_mode((800,600))
 
-    # !!! Receive the exact amount of data rather than 2048
-    print("Receiving character data...")
-    my_square = client.recv(2048)
+    # Done
+    print("[CLIENT] Receiving character data...")
+    header_data = client.recv(HEADER_SIZE).decode(FORMAT_TYPE)
+    if header_data:
+        header_data = int(header_data)
+        
+    my_square = client.recv(header_data)
     my_square = pickle.loads(my_square)
     my_square = square.PlayerSquare(my_square, screen)
-    print("Character data received.")
+    print("[CLIENT] Character data received.")
 
     # List of all current player squares
-    squares = []
+    player_squares = [None,None,None,None,None,None,None,None]
+    clock.tick(60)
 
     while True:
 
         gf.check_events(screen, my_square)
-        print(f"X: {my_square.h_velocity} Y: {my_square.y_velocity} RECT: {my_square.rect.center}")
-        #pickleSwap(my_square,client)
-        gf.update_screen(screen, my_square)
+
+        player_squares = pickleSwap(my_square, client)
+        
+        gf.update_screen(screen, my_square, player_squares)
 
 
-
-        # Infinitely request and send input until keyword entered, then disconnect
-        """myinput = ""
-        while myinput != "!quit" and myinput != "!q":
-            myinput = input("Say: ")
-            dataSwap(myinput, client)
-        else:
-            client.close()
-            print("You have disconnected from the server. Now exiting...")
-            pygame.quit()
-            break"""
     else:
+        # Exit cleanly
         client.close()
         print("You have disconnected from the server. Now exiting...")
         pygame.quit()
@@ -88,31 +84,28 @@ def ipPrompt():
             print("Invalid IPv4. Please try again following the format: X.X.X.X")
     return temp_ipv4
 
-def dataSwap(data, client):
-
-    # Encode string in utf-8
-    alldata = data.encode(FORMAT_TYPE)
-
-    # Add buffer and encode data length string in utf-8 
-    send_length = f"{len(alldata):<{HEADER_SIZE}}"
-    send_length = str(send_length).encode(FORMAT_TYPE)
-
-    # Send header to server, then data
-    client.send(send_length)
-    client.send(alldata)
-
-    # Receive data from server
-    return (client.recv(2048).decode(FORMAT_TYPE))
+def printArray(given_array):
+    for item in given_array:
+        if item is not None:
+            pass
 
 def pickleSwap(data, client):
-    alldata = pickle.dumps(square.MySquare(data.player_id, data.name))
+
+    # Turn coordinates of player square into a tuple, send to server and receive all square updates
+    alldata = pickle.dumps((data.center_x, data.center_y))
     send_length = f"{len(alldata):<{HEADER_SIZE}}"
     send_length = str(send_length).encode(FORMAT_TYPE)
 
     client.send(send_length)
     client.send(alldata)
 
-    squares = client.recv(2048)
+    # Receive player_squares list
+    squares = client.recv(HEADER_SIZE)
+    squares = int(squares)
+    squares = client.recv(squares)
+
     squares = pickle.loads(squares)
+    printArray(squares)
+    return squares
 
 main()

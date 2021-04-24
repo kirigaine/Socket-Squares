@@ -1,0 +1,67 @@
+
+name: Python CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+env: 
+  TAG_NAME: "v0.1"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9.1
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.1'
+      - name: Install modules      
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+      - name: Create executable using pyinstaller
+        run: |
+          pyinstaller client.py --onefile
+          pyinstaller server.py --onefile
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create release(s)
+        uses: actions/create-release@v1.1.4
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          tag_name: $TAG_NAME
+          release_name: Release $TAG_NAME
+          draft: false
+          prerelease: true
+          body: "Executables for Socket-Squares"
+      - name: Upload server.exe
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/server
+          asset_name: socketsquares_server.exe
+          asset_content_type: application/exe
+      - name: Upload client.exe
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/client
+          asset_name: socketsquares_client.exe
+          asset_content_type: application/exe
+          
+          
+          
