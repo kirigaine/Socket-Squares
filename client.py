@@ -99,6 +99,7 @@ def pickleSwap(data, client):
     client.send(send_length)
     client.send(alldata)
 
+    # Receive player_squares list
     squares = client.recv(HEADER_SIZE)
     squares = int(squares)
     squares = client.recv(squares)
