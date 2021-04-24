@@ -34,7 +34,8 @@ jobs:
           name: pyinstaller_dist
           path: ./dist
           
-  create_release:
+  release:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -49,17 +50,10 @@ jobs:
           draft: false
           prerelease: true
           body: "Executables for Socket-Squares"
-  upload_release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Download artifact
         uses: actions/download-artifact@v2.0.9
         with:
           name: pyinstaller_dist
-      - name: Display files
-        run: ls -R
       - name: Upload server.exe
         uses: actions/upload-release-asset@v1.0.2
         env:
