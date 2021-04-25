@@ -1,6 +1,7 @@
 
 name: Python CI
 
+# Run only when committing to main
 on:
   push:
     branches: [ main ]
@@ -8,37 +9,46 @@ on:
     branches: [ main ]
 
   workflow_dispatch:
-env: 
-  TAG_NAME: "v0.1"
 jobs:
+  # 1st Job: Build
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout commit
       - uses: actions/checkout@v2
+
+      # Setup python 3.9.1 environment
       - name: Set up Python 3.9.1
         uses: actions/setup-python@v2
         with:
           python-version: '3.9.1'
+
+      # Install specific version of modules to build and run
       - name: Install modules      
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install -r build_requirements.txt
+
+      # Create one-file executable for both the server and client
       - name: Create executable using pyinstaller
         run: |
           pyinstaller client.py --onefile
           pyinstaller server.py --onefile
+
+      # Upload two executables into artifact for release job
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.3
         with:
           name: pyinstaller_dist
           path: ./dist
-          
+  # 2nd Job: Release (depends on build)   
   release:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      # Create a public release 
       - name: Create release
         uses: actions/create-release@v1.1.4
         id: create_release
@@ -50,10 +60,14 @@ jobs:
           draft: false
           prerelease: true
           body: "Executables for Socket-Squares"
+
+      # Download/open artifact made in build job
       - name: Download artifact
         uses: actions/download-artifact@v2.0.9
         with:
           name: pyinstaller_dist
+
+      # Upload server.exe to release
       - name: Upload server.exe
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -63,6 +77,8 @@ jobs:
           asset_path: server
           asset_name: socketsquares_server.exe
           asset_content_type: application/exe
+
+      # Upload client.exe to release
       - name: Upload client.exe
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -72,6 +88,4 @@ jobs:
           asset_path: client
           asset_name: socketsquares_client.exe
           asset_content_type: application/exe
-          
-          
           
