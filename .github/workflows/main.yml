@@ -55,8 +55,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: "v${{ github.run_number }}"
-          release_name: "Release v${{ github.run_number }}"
+          tag_name: "v0.${{ github.run_number }}"
+          release_name: "Release v0.${{ github.run_number }}"
           draft: false
           prerelease: true
           body: "Executables for Socket-Squares"
