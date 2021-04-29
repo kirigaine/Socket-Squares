@@ -42,7 +42,7 @@ jobs:
       - name: Compress files into .zip
         run: |
           dir ./dist
-          tar.exe -czvf socket_squares.zip ./dist/server ./dist/client ./data
+          tar.exe -czvf socket_squares.zip ./dist/server.exe ./dist/client.exe ./data
 
       # Upload compressed file into artifact for release job
       - name: Upload compressed files artifact
