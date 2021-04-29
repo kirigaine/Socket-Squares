@@ -42,6 +42,11 @@ jobs:
         with:
           name: pyinstaller_dist
           path: ./dist
+      - name: Upload names.txt
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: names
+          path: ./names.txt
   # 2nd Job: Release (depends on build)   
   release:
     needs: build
@@ -66,6 +71,11 @@ jobs:
         uses: actions/download-artifact@v2.0.9
         with:
           name: pyinstaller_dist
+          
+      - name: Download artifact 2
+        uses: actions/download-artifact@v2.0.9
+        with:
+          name: names
 
       # Upload server.exe to release
       - name: Upload server.exe
@@ -89,3 +99,12 @@ jobs:
           asset_name: socketsquares_client.exe
           asset_content_type: application/exe
           
+      # Upload client.exe to release
+      - name: Upload names.txt
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: names
+          asset_name: names.txt
