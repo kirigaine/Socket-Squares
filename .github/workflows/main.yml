@@ -124,7 +124,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows_version
+          asset_path: socket_squares.zip
           asset_name: socket_squares.zip
           asset_content_type: application/zip
 
@@ -135,7 +135,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: linux_version
+          asset_path: socket_squares.tar.gz
           asset_name: socket_squares.tar.gz
           asset_content_type: application/tar.gz
           
