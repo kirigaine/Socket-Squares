@@ -40,7 +40,7 @@ jobs:
 
       # Compress windows files into .zip
       - name: Compress files into .zip
-        run: tar.exe -czvf socket_squares.zip ./dist/server ./dist/client ./data
+        run: tar.exe -czvf socket_squares.zip ./Socket-Squares/dist/server ./Socket-Squares/dist/client ./data
 
       # Upload compressed file into artifact for release job
       - name: Upload compressed files artifact
@@ -76,7 +76,7 @@ jobs:
         
         # Compress linux files into .gz
         - name: Compress files into .gz
-          run: tar.exe -czvf socket_squares.tar.gz ./dist/server ./dist/client ./data
+          run: tar -czvf socket_squares.tar.gz ./dist/server ./dist/client ./data
 
         # Upload compressed file into artifact for release job
         - name: Upload compressed files artifact
