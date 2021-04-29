@@ -48,42 +48,42 @@ jobs:
         with:
           name: windows_version
           path: ./socket_squares.zip
-# 2nd Job: Build for Linux
-build-linux:
-    runs-on: ubuntu-latest
+  # 2nd Job: Build for Linux
+  build-linux:
+      runs-on: ubuntu-latest
 
-    steps:
-      # Checkout commit
-      - uses: actions/checkout@v2
+      steps:
+        # Checkout commit
+        - uses: actions/checkout@v2
 
-      # Setup python 3.9.1 environment
-      - name: Set up Python 3.9.1
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9.1'
+        # Setup python 3.9.1 environment
+        - name: Set up Python 3.9.1
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.9.1'
 
-      # Install specific version of modules to build and run
-      - name: Install modules      
-        run: |
-          pip install -r requirements.txt
-          pip install -r build_requirements.txt
+        # Install specific version of modules to build and run
+        - name: Install modules      
+          run: |
+            pip install -r requirements.txt
+            pip install -r build_requirements.txt
 
-      # Create one-file executable for both the server and client
-      - name: Create executable using pyinstaller
-        run: |
-          pyinstaller --onefile client.py
-          pyinstaller --onefile server.py
-      
-      # Compress linux files into .gz
-      - name: Compress files into .gz
-        run: tar.exe -czvf socket_squares.tar.gz ./dist/server ./dist/client ./data
+        # Create one-file executable for both the server and client
+        - name: Create executable using pyinstaller
+          run: |
+            pyinstaller --onefile client.py
+            pyinstaller --onefile server.py
+        
+        # Compress linux files into .gz
+        - name: Compress files into .gz
+          run: tar.exe -czvf socket_squares.tar.gz ./dist/server ./dist/client ./data
 
-      # Upload compressed file into artifact for release job
-      - name: Upload compressed files artifact
-        uses: actions/upload-artifact@v2.2.3
-        with:
-          name: linux_version
-          path: ./socket_squares.tar.gz
+        # Upload compressed file into artifact for release job
+        - name: Upload compressed files artifact
+          uses: actions/upload-artifact@v2.2.3
+          with:
+            name: linux_version
+            path: ./socket_squares.tar.gz
           
   # 3rd Job: Release   
   release:
