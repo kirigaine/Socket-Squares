@@ -18,7 +18,7 @@ class SquareFactory():
         return MySquare(temp_id, temp_name)
 
     def prepareLists(self):
-        with open("names.txt", "r") as f:
+        with open("data/names.txt", "r") as f:
             while True:
                 f_line = f.readline()
                 if not f_line:
