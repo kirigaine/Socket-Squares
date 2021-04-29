@@ -106,7 +106,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: names
+          asset_path: names.txt
           asset_name: names.txt
           asset_content_type: application/txt
           
