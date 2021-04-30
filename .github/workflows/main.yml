@@ -50,7 +50,7 @@ jobs:
           path: ./ss_windows.zip
   # 2nd Job: Build for Linux
   build-linux:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-l8.04
 
       steps:
         # Checkout commit
