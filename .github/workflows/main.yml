@@ -40,9 +40,7 @@ jobs:
 
       # Compress windows files into .zip
       - name: Compress files into .zip
-        run: |
-          dir ./dist
-          tar.exe -czvf socket_squares.zip ./dist/server.exe ./dist/client.exe ./data
+        run: Compress-Archive -Path ".\\dist\\server.exe", ".\\dist\\client.exe", ".\\data" -DestinationPath ".\\socket_squares.zip"
 
       # Upload compressed file into artifact for release job
       - name: Upload compressed files artifact
