@@ -40,14 +40,14 @@ jobs:
 
       # Compress windows files into .zip
       - name: Compress files into .zip
-        run: Compress-Archive -Path ".\\dist\\server.exe", ".\\dist\\client.exe", ".\\data" -DestinationPath ".\\socket_squares.zip"
+        run: Compress-Archive -Path ".\\dist\\server.exe", ".\\dist\\client.exe", ".\\data" -DestinationPath ".\\ss_windows.zip"
 
       # Upload compressed file into artifact for release job
       - name: Upload compressed files artifact
         uses: actions/upload-artifact@v2.2.3
         with:
           name: windows_version
-          path: ./socket_squares.zip
+          path: ./ss_windows.zip
   # 2nd Job: Build for Linux
   build-linux:
       runs-on: ubuntu-latest
@@ -76,14 +76,14 @@ jobs:
         
         # Compress linux files into .gz
         - name: Compress files into .gz
-          run: tar -czvf socket_squares.tar.gz ./dist/server ./dist/client ./data
+          run: tar -czvf ss_linux.tar.gz ./data -C ./dist/ ./server ./client
 
         # Upload compressed file into artifact for release job
         - name: Upload compressed files artifact
           uses: actions/upload-artifact@v2.2.3
           with:
             name: linux_version
-            path: ./socket_squares.tar.gz
+            path: ./ss_linux.tar.gz
           
   # 3rd Job: Release   
   release:
@@ -122,8 +122,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: socket_squares.zip
-          asset_name: socket_squares.zip
+          asset_path: ss_windows.zip
+          asset_name: ss_windows.zip
           asset_content_type: application/zip
 
       # Upload linux version to release
@@ -133,8 +133,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: socket_squares.tar.gz
-          asset_name: socket_squares.tar.gz
+          asset_path: ss_linux.tar.gz
+          asset_name: ss_linux.tar.gz
           asset_content_type: application/tar.gz
           
           
