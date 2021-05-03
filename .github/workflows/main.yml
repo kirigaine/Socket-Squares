@@ -86,11 +86,11 @@ jobs:
             path: ./ss_linux.tar.gz
 
         # Upload changelog artifact
-      - name: Upload changelog artifact
-        uses: actions/upload-artifact@v2.2.3
-        with:
-          name: changelog
-          path: ./CHANGELOG.md
+        - name: Upload changelog artifact
+          uses: actions/upload-artifact@v2.2.3
+          with:
+            name: changelog
+            path: ./CHANGELOG.md
           
   # 3rd Job: Release   
   release:
