@@ -84,6 +84,13 @@ jobs:
           with:
             name: linux_version
             path: ./ss_linux.tar.gz
+
+        # Upload changelog artifact
+      - name: Upload changelog artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: changelog
+          path: ./CHANGELOG.md
           
   # 3rd Job: Release   
   release:
@@ -115,6 +122,11 @@ jobs:
         with:
           name: linux_version
 
+      - name: Download changelog artifact
+        uses: actions/download-artifact@v2.0.9
+        with:
+          name: changelog
+          
       # Upload windows version to release
       - name: Upload windows_version
         uses: actions/upload-release-asset@v1.0.2
