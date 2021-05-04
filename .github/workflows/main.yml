@@ -109,7 +109,7 @@ jobs:
         run: |
           echo "tag1=v0.${{ github.run_number }}" >> $GITHUB_ENV
           echo "tag2=v0.$(expr ${{ github.run_number }} - 1)" >> $GITHUB_ENV
-          echo "::set-output name=releasenotes::$(cat CHANGELOG.md | awk '/${{ env.tag1 }}/,/${{ env.tag2 }}/' | sed '1d;$d' | sed '$d')"
+          echo "::set-output name=releasenotes::test123"
         id: release_body
 
       # Echo releasenotes
