@@ -112,6 +112,10 @@ jobs:
           echo "::set-output name=releasenotes::$(cat CHANGELOG.md | awk '/${{ env.tag1 }}/,/${{ env.tag2 }}/' | sed '1d;$d' | sed '$d')"
         id: release_body
 
+      # Echo releasenotes
+      - name: Echo releasenotes test
+        run: echo "${{ steps.release_body.outputs.releasenotes }}"
+
       # Create a public release 
       - name: Create release
         uses: actions/create-release@v1.1.4
