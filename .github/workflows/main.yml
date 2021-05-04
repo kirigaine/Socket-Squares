@@ -110,7 +110,6 @@ jobs:
           echo "tag1=v0.${{ github.run_number }}" >> $GITHUB_ENV
           echo "tag2=v0.$(expr ${{ github.run_number }} - 1)" >> $GITHUB_ENV
           echo "::set-output name=releasenotes::$(cat CHANGELOG.md | awk '/${{ env.tag1 }}/,/${{ env.tag2 }}/' | sed '1d;$d' | sed '$d')"
-          echo "${{ env.tag1 }} ${{ env.tag2 }}"
         id: release_body
 
       # Create a public release 
@@ -124,7 +123,7 @@ jobs:
           release_name: "Release v0.${{ github.run_number }}"
           draft: false
           prerelease: false
-          body: ${{steps.release_body.outputs.releasenotes}}
+          body: ${{ steps.release_body.outputs.releasenotes }}
 
       # Download artifacts from previous job
       - name: Download windows artifact
