@@ -109,7 +109,7 @@ jobs:
         run: |
           tag1=v0.${{ github.run_number }}
           tag2=v0.$(expr ${{ github.run_number }} - 1)
-          rel_body="$(cat CHANGELOG.md | awk '/$tag1/,/$tag2/' | sed '1d;$d' | sed '$d')"
+          rel_body="$(cat CHANGELOG.md | awk '/'$tag1'/,/'$tag2'/' | sed '1d;$d' | sed '$d')"
           rel_body="${rel_body//'%'/'%25'}"
           rel_body="${rel_body//$'\n'/'%0A'}"
           rel_body="${rel_body//$'\r'/'%0D'}"
