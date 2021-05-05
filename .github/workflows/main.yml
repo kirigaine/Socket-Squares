@@ -8,11 +8,13 @@ on:
   #pull_request:
     #branches: [ main ]
 
+  # Allow manual running
   workflow_dispatch:
+
 jobs:
-  # 1st Job: Build
-  build:
-    runs-on: ubuntu-latest
+  # 1st Job: Build for Windows
+  build-windows:
+    runs-on: windows-latest
 
     steps:
       # Checkout commit
@@ -33,21 +35,92 @@ jobs:
       # Create one-file executable for both the server and client
       - name: Create executable using pyinstaller
         run: |
-          pyinstaller client.py --onefile
-          pyinstaller server.py --onefile
+          pyinstaller --onefile client.py
+          pyinstaller --onefile server.py
 
-      # Upload two executables into artifact for release job
-      - name: Upload artifact
+      # Compress windows files into .zip
+      - name: Compress files into .zip
+        run: Compress-Archive -Path ".\\dist\\server.exe", ".\\dist\\client.exe", ".\\data" -DestinationPath ".\\ss_windows.zip"
+
+      # Upload compressed file into artifact for release job
+      - name: Upload compressed files artifact
         uses: actions/upload-artifact@v2.2.3
         with:
-          name: pyinstaller_dist
-          path: ./dist
-  # 2nd Job: Release (depends on build)   
+          name: windows_version
+          path: ./ss_windows.zip
+  # 2nd Job: Build for Linux
+  build-linux:
+      runs-on: ubuntu-18.04
+
+      steps:
+        # Checkout commit
+        - uses: actions/checkout@v2
+
+        # Setup python 3.9.1 environment
+        - name: Set up Python 3.9.1
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.9.1'
+
+        # Install specific version of modules to build and run
+        - name: Install modules      
+          run: |
+            pip install -r requirements.txt
+            pip install -r build_requirements.txt
+
+        # Create one-file executable for both the server and client
+        - name: Create executable using pyinstaller
+          run: |
+            pyinstaller --onefile client.py
+            pyinstaller --onefile server.py
+        
+        # Compress linux files into .gz
+        - name: Compress files into .gz
+          run: tar -czvf ss_linux.tar.gz ./data -C ./dist/ ./server ./client
+
+        # Upload compressed file into artifact for release job
+        - name: Upload compressed files artifact
+          uses: actions/upload-artifact@v2.2.3
+          with:
+            name: linux_version
+            path: ./ss_linux.tar.gz
+
+        # Upload changelog artifact
+        - name: Upload changelog artifact
+          uses: actions/upload-artifact@v2.2.3
+          with:
+            name: changelog
+            path: ./CHANGELOG.md
+          
+  # 3rd Job: Release   
   release:
-    needs: build
+    needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
 
     steps:
+      # Download changelog artifact
+      - name: Download changelog artifact
+        uses: actions/download-artifact@v2.0.9
+        with:
+          name: changelog
+
+      # Extract changelog version information
+      - name: Extract changelog
+        run: |
+          tag1=v0.${{ github.run_number }}
+          tag2=v0.$(expr ${{ github.run_number }} - 1)
+          rel_body="$(cat CHANGELOG.md | awk '/'$tag1'/,/'$tag2'/' | sed '1d;$d' | sed '$d')"
+          rel_body="${rel_body//'%'/'%25'}"
+          rel_body="${rel_body//$'\n'/'%0A'}"
+          rel_body="${rel_body//$'\r'/'%0D'}"
+          echo "rel_body=$rel_body" >> $GITHUB_ENV
+          echo "::set-output name=releasenotes::$rel_body"
+        id: release_body
+
+      # Echo releasenotes
+      - name: Echo releasenotes test
+        run: echo "${{ steps.release_body.outputs.releasenotes }}"
+
       # Create a public release 
       - name: Create release
         uses: actions/create-release@v1.1.4
@@ -55,37 +128,43 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: "v${{ github.run_number }}"
-          release_name: "Release v${{ github.run_number }}"
+          tag_name: "v0.${{ github.run_number }}"
+          release_name: "Release v0.${{ github.run_number }}"
           draft: false
-          prerelease: true
-          body: "Executables for Socket-Squares"
+          prerelease: false
+          body: ${{ steps.release_body.outputs.releasenotes }}
 
-      # Download/open artifact made in build job
-      - name: Download artifact
+      # Download artifacts from previous job
+      - name: Download windows artifact
         uses: actions/download-artifact@v2.0.9
         with:
-          name: pyinstaller_dist
-
-      # Upload server.exe to release
-      - name: Upload server.exe
+          name: windows_version
+          
+      - name: Download linux artifact
+        uses: actions/download-artifact@v2.0.9
+        with:
+          name: linux_version
+                    
+      # Upload windows version to release
+      - name: Upload windows_version
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: server
-          asset_name: socketsquares_server.exe
-          asset_content_type: application/exe
+          asset_path: ss_windows.zip
+          asset_name: ss_windows.zip
+          asset_content_type: application/zip
 
-      # Upload client.exe to release
-      - name: Upload client.exe
+      # Upload linux version to release
+      - name: Upload linux_version
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: client
-          asset_name: socketsquares_client.exe
-          asset_content_type: application/exe
+          asset_path: ss_linux.tar.gz
+          asset_name: ss_linux.tar.gz
+          asset_content_type: application/tar.gz
+          
           

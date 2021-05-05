@@ -37,23 +37,31 @@ def check_keydown_events(event, square):
     """Respond to keypresses"""
     if event.key == pygame.K_ESCAPE:
         print("escape")
-        sys.exit()  
+        sys.exit()
+    # Move Up
     elif event.key == pygame.K_UP or event.key == pygame.K_w:
         square.y_velocity -= 3
+    # Move Down
     elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
         square.y_velocity += 3
+    # Move Right
     elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
         square.h_velocity += 3
+    # Move Left
     elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
         square.h_velocity -= 3
 
 def check_keyup_events(event, square):
     """Respond to key releases"""
+    # Stop Move Up
     if event.key == pygame.K_UP or event.key == pygame.K_w:
         square.y_velocity += 3
+    # Stop Move Down
     elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
         square.y_velocity -= 3
+    # Stop Move Right
     elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
         square.h_velocity -= 3
+    # Stop Move Left
     elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
         square.h_velocity += 3
