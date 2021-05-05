@@ -107,9 +107,9 @@ jobs:
       # Extract changelog version information
       - name: Extract changelog
         run: |
-          echo "tag1=v0.${{ github.run_number }}" >> $GITHUB_ENV
-          echo "tag2=v0.$(expr ${{ github.run_number }} - 1)" >> $GITHUB_ENV
-          rel_body="$(cat CHANGELOG.md | awk '/${{ env.tag1 }}/,/${{ env.tag2 }}/' | sed '1d;$d' | sed '$d')"
+          tag1=v0.${{ github.run_number }}
+          tag2=v0.$(expr ${{ github.run_number }} - 1)
+          rel_body="$(cat CHANGELOG.md | awk '/$tag1/,/$tag2/' | sed '1d;$d' | sed '$d')"
           rel_body="${rel_body//'%'/'%25'}"
           rel_body="${rel_body//$'\n'/'%0A'}"
           rel_body="${rel_body//$'\r'/'%0D'}"
