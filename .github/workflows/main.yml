@@ -113,7 +113,7 @@ jobs:
           rel_body="${rel_body//'%'/'%25'}"
           rel_body="${rel_body//$'\n'/'%0A'}"
           rel_body="${rel_body//$'\r'/'%0D'}"
-          echo "rel_body=$rel_body >> $GITHUB_ENV
+          echo "rel_body=$rel_body" >> $GITHUB_ENV
           echo "::set-output name=releasenotes::${{ env.rel_body }}"
         id: release_body
 
