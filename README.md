@@ -6,13 +6,31 @@ Socket-Squares is a simple pygame application that allows users to connect to a 
 
 ## Installation
 
-You should only need python and the pygame library to run Socket-Squares. The pip package manager can be used as such to install the requirements:
-```bash
-pip install -r requirements.txt
-```
+### Release (for those that just want to play):
+
+1. Download the [latest release](https://github.com/kirigaine/Socket-Squares/releases) for your operating system
+2. Extract files in desired directory
+3. 
+   - ***[LINUX]*** Ensure *server* and *client* have permission to execute 
+      - *Note: This is the simplest way to give permission, but consider your own security needs depending on your system/network*
+      - ```sudo chmod +x client server```
+   - ***[WINDOWS]*** When running either executable, Windows Security may pop up a window saying "Windows protected your PC"
+      - *Note: There is no security risk in running this program*
+      - Bypass this by clicking **"More info"**, then clicking **"Run anyway"**
+4. Run *server* to begin hosting a session if needed, then connect with *client* by entering an IPv4 and hitting enter!
+   - Note: Pass your 
+
+### Source Files (for those that may want to alter code):
+
+You should only need python to get all the requirements to run Socket-Squares. The pip package manager can be used as such to install the requirements:
+
+1. ```pip install -r requirements.txt ```
 
 ## Usage
 
+### Release
+
+### Source Files
 1. Run server.py on the desired host
    - ```python server.py```
 2. Clients run client.py and enter the IPv4 of the desired server *(Note: Up to 8 clients may connect to a server at a time)*
