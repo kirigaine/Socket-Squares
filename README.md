@@ -29,6 +29,7 @@ Max Players: 8
 ### Release
 
 1. Run *server* to begin hosting a session if needed, then connect with *client* by entering an IPv4 and hitting enter!
+   - Note: May need to port forward 26256 TCP
 2. ***[WINDOWS]*** When running either executable, Windows Security may pop up a window saying "Windows protected your PC"
    - *Note: There is no security risk in running this program*
    - Bypass this by clicking **"More info"**, then clicking **"Run anyway"**
